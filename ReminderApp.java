@@ -8,6 +8,8 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class ReminderApp {
   private JFrame frame;
@@ -74,10 +76,26 @@ public class ReminderApp {
     });
     formPanel.add(addButton);
 
-    frame.setSize(400, 300);
+    String logoPath = "path/to/bthslogo.JPG";
+    ImageIcon logoIcon = new ImageIcon(logoPath);
+    frame.setIconImage(logoIcon.getImage());
+    frame.setSize(600, 500); // Increase the size of the frame
     frame.setVisible(true);
 
     scheduler = Executors.newScheduledThreadPool(1);
+
+    reminderList.addListSelectionListener(new ListSelectionListener() {
+      @Override
+      public void valueChanged(ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting()) {
+          Reminder selectedReminder = reminderList.getSelectedValue();
+          if (selectedReminder != null) {
+            String description = selectedReminder.getDescription();
+            JOptionPane.showMessageDialog(frame, description, "Description", JOptionPane.INFORMATION_MESSAGE);
+          }
+        }
+      }
+    });
   }
 
   private Date parseDate(String dateString) {
@@ -105,7 +123,21 @@ public class ReminderApp {
       super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
       if (value instanceof Reminder) {
         Reminder reminder = (Reminder) value;
-        setText(reminder.getTitle());
+        String title = reminder.getTitle();
+        Date dueDate = reminder.getDate();
+
+        long remainingTime = dueDate.getTime() - System.currentTimeMillis();
+        if (remainingTime < 0) {
+          setText(title + " - Expired");
+        } else {
+          long days = TimeUnit.MILLISECONDS.toDays(remainingTime);
+          long hours = TimeUnit.MILLISECONDS.toHours(remainingTime) % 24;
+          long minutes = TimeUnit.MILLISECONDS.toMinutes(remainingTime) % 60;
+          long seconds = TimeUnit.MILLISECONDS.toSeconds(remainingTime) % 60;
+
+          String countdownText = String.format("Due in: %02d:%02d:%02d:%02d", days, hours, minutes, seconds);
+          setText(title + " - " + countdownText);
+        }
       }
       return this;
     }
