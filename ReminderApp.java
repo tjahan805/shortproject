@@ -16,8 +16,10 @@ public class ReminderApp {
   private JTextField titleField;
   private JTextArea descriptionArea;
   private JTextField dateField;
+  private JLabel displayField;
   private DefaultListModel<Reminder> reminderListModel;
   private ScheduledExecutorService scheduler;
+  private ImageIcon bthsLogo;
 
   public ReminderApp() {
     frame = new JFrame("BTHS Reminder App");
@@ -75,10 +77,18 @@ public class ReminderApp {
       }
     });
     formPanel.add(addButton);
-
-    String logoPath = "path/to/bthslogo.JPG";
-    ImageIcon logoIcon = new ImageIcon(logoPath);
-    frame.setIconImage(logoIcon.getImage());
+    
+try {
+    bthsLogo = new ImageIcon(Objects.requireNonNull(getClass().getResource("bthslogo1.png")));
+    Image bthsLogoResize = bthsLogo.getImage();
+    Image change = bthsLogoResize.getScaledInstance(50, 50,  java.awt.Image.SCALE_SMOOTH);
+    bthsLogo= new ImageIcon(change);
+    displayField=new JLabel(bthsLogo);
+    formPanel.add(displayField);
+}catch(Exception e){
+    System.out.println("Image cannot be found");
+}
+    
     frame.setSize(600, 500); // Increase the size of the frame
     frame.setVisible(true);
 
