@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-public class ReminderApp {
+public class Main {
   private JFrame frame;
   private JTextField titleField;
   private JTextArea descriptionArea;
@@ -21,7 +21,7 @@ public class ReminderApp {
   private ScheduledExecutorService scheduler;
   private ImageIcon bthsLogo;
 
-  public ReminderApp() {
+  public Main() {
     frame = new JFrame("BTHS Reminder App");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
